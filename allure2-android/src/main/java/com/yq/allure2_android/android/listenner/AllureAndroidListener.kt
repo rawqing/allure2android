@@ -8,12 +8,15 @@ import org.junit.runner.Result
 import org.junit.runner.notification.Failure
 import java.util.*
 import com.yq.allure2_android.common.DisplayName
+import com.yq.allure2_android.common.utils.ResultsUtils.createLabel
+import com.yq.allure2_android.common.utils.ResultsUtils.createLink
+import com.yq.allure2_android.common.utils.ResultsUtils.getHostName
+import com.yq.allure2_android.common.utils.ResultsUtils.getThreadName
 import io.qameta.allure.model.TestResult
 import io.qameta.allure.*
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.StatusDetails
 import io.qameta.allure.model.Link
-import io.qameta.allure.util.ResultsUtils.*
 import org.junit.Ignore
 import java.math.BigInteger
 import java.security.MessageDigest

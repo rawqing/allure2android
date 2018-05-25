@@ -1,7 +1,15 @@
 package com.yq.allure2_android.common.utils
 
+import android.nfc.Tag
+import android.os.Build
+import android.support.annotation.RequiresApi
+import android.util.Log
 import com.google.common.io.Resources
+import com.yq.allure2_android.common.utils.ResultsUtils.ALLURE_DESCRIPTIONS_PACKAGE
+import com.yq.allure2_android.common.utils.ResultsUtils.ALLURE_SEPARATE_LINES_SYSPROP
 import com.yq.allure2_android.common.utils.ResultsUtils.MD_5
+import com.yq.allure2_android.common.utils.ResultsUtils.TAG
+import com.yq.allure2_android.common.utils.ResultsUtils.cachedHost
 import io.qameta.allure.*
 import io.qameta.allure.model.*
 import io.qameta.allure.model.Link
@@ -21,6 +29,7 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
+import java.util.function.Supplier
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.text.Charsets.UTF_8
@@ -48,8 +57,9 @@ object ResultsUtils {
 
     val ALLURE_DESCRIPTIONS_PACKAGE = "allureDescriptions/"
     val MD_5 = "MD5"
+    val TAG = "allure_ResultsUtils"
 
-    private var cachedHost: String? = null
+    var cachedHost: String? = null
 
     fun createEpicLabel(epic: String): Label {
         return Label().withName(EPIC_LABEL_NAME).withValue(epic)
@@ -128,8 +138,8 @@ object ResultsUtils {
     }
 
     fun createLink(value: String?, name: String?, url: String?, type: String): Link {
-        val resolvedName = value ?:name
-        val resolvedUrl = url?: getLinkUrl(resolvedName!!, type)
+        val resolvedName = value ?: name
+        val resolvedUrl = url ?: getLinkUrl(resolvedName!!, type)
         return Link()
                 .withName(resolvedName)
                 .withUrl(resolvedUrl)
@@ -149,13 +159,14 @@ object ResultsUtils {
     }
 
     fun getStatus(throwable: Throwable): Status {
-        return if (throwable is AssertionError) Status.FAILED else Status.BROKEN }
+        return if (throwable is AssertionError) Status.FAILED else Status.BROKEN
     }
 
-    fun getStatusDetails(e: Throwable): StatusDetails{
+
+    fun getStatusDetails(e: Throwable): StatusDetails {
         return e.let {
             StatusDetails()
-                    .withMessage(it.message?:it.javaClass.name)
+                    .withMessage(it.message ?: it.javaClass.name)
                     .withTrace(getStackTraceAsString(it))
         }
     }
@@ -168,7 +179,7 @@ object ResultsUtils {
         val md = getMd5Digest()
         md.update(methodName.toByteArray(UTF_8))
         parameterTypes.map { it.toByteArray(UTF_8) }
-                .forEach{md.update(it)}
+                .forEach { md.update(it) }
 
         return printHexBinary(md.digest()).toLowerCase()
     }
@@ -185,25 +196,24 @@ object ResultsUtils {
     private fun getLinkUrl(name: String?, type: String): String? {
         val properties = loadAllureProperties()
         val pattern = properties.getProperty(getLinkTypePatternPropertyName(type))
-        return pattern?.apply { this.replace("\\{}".toRegex(), name?:"")}
+        return pattern?.apply { this.replace("\\{}".toRegex(), name ?: "") }
     }
 
     private fun getRealHostName(): String {
-        if (Objects.isNull(cachedHost)) {
+        if (cachedHost == null) {
             try {
                 cachedHost = InetAddress.getLocalHost().hostName
-            } catch (e: UnknownHostException) {
-                LOGGER.debug("Could not get host name {}", e)
+            } catch (e: Exception) {
+                Log.d(TAG, "Could not get host name $e")
                 cachedHost = "default"
             }
 
         }
-        return cachedHost
+        return cachedHost!!
     }
 
     private fun getRealThreadName(): String {
-        return String.format("%s.%s(%s)",
-                ManagementFactory.getRuntimeMXBean().getName(),
+        return String.format("%s(%s)",
                 Thread.currentThread().name,
                 Thread.currentThread().id)
     }
@@ -214,31 +224,31 @@ object ResultsUtils {
         return stringWriter.toString()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun processDescription(classLoader: ClassLoader, method: Method,
                            item: ExecutableItem) {
         if (method.isAnnotationPresent(Description::class.java)) {
-            if (method.getAnnotation(Description::class.java).useJavaDoc()) {
+            if (method.getAnnotation(Description::class.java).useJavaDoc) {
                 val name = method.name
-                val parameterTypes = Stream.of(*method.parameterTypes).map<String>(Function<Class<*>, String> { it.getTypeName() })
-                        .collect<List<String>, Any>(Collectors.toList())
+                val parameterTypes = method.parameterTypes
+                        .map { it.typeName }
+
                 val signatureHash = generateMethodSignatureHash(name, parameterTypes)
                 val description: String
                 try {
-                    val resource = Optional.ofNullable(classLoader
-                            .getResource(ALLURE_DESCRIPTIONS_PACKAGE + signatureHash))
-                            .orElseThrow<IOException>(Supplier<IOException> { IOException() })
-                    description = Resources.toString(resource, Charset.defaultCharset())
+                    val resource = classLoader.getResource(ALLURE_DESCRIPTIONS_PACKAGE + signatureHash)?.apply { IOException() }
+                    description = Resources.toString(resource!!, Charset.defaultCharset())
                     if (separateLines()) {
                         item.withDescriptionHtml(description.replace("\n", "<br />"))
                     } else {
                         item.withDescriptionHtml(description)
                     }
                 } catch (e: IOException) {
-                    LOGGER.warn("Unable to process description resource file for method {} {}", name, e.message)
+                    Log.w(TAG, "Unable to process description resource file for method $name", e)
                 }
 
             } else {
-                val description = method.getAnnotation(Description::class.java).value()
+                val description = method.getAnnotation(Description::class.java).value
                 item.withDescription(description)
             }
         }
