@@ -2,12 +2,12 @@ package com.yq.allure2_android.common
 
 import io.qameta.allure.AllureConstants.ATTACHMENT_FILE_SUFFIX
 import android.util.Log
-import io.qameta.allure.listener.LifecycleNotifier
 import io.qameta.allure.AllureResultsWriter
 import io.qameta.allure.model.*
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.*
+import com.yq.allure2_android.android.listenner.LifecycleNotifier
 
 
 class AllureLifecycle(

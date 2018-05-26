@@ -2,6 +2,8 @@ package com.yq.allure2_android.common.utils
 
 import java.util.*
 
+val allureTag = "allure_"
+
 fun isNull(obj : Any?):Boolean{
     return obj == null
 }
