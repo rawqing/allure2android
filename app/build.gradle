@@ -54,4 +54,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation project(":allure2-android")
     androidTestImplementation "io.qameta.allure:allure-java-commons:2.6.0"
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+
 }

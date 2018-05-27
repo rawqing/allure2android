@@ -9,10 +9,11 @@ import android.support.test.uiautomator.UiDevice
 import android.util.Log
 import java.io.File
 import com.yq.allure2_android.common.Allure
+import com.yq.allure2_android.common.Allure.resDirPath
 
 
 val allureTag = "allure_"
-val reportName = "allure-results"
+val reportName = "allure-results" + File.separator
 
 
 fun isNull(obj : Any?):Boolean{
@@ -58,10 +59,12 @@ fun grantPermissions() {
  * 获取可存取的目录路径
  */
 fun getResDirPath() : String{
-    val resdp =  Allure.resDirPath ?: InstrumentationRegistry.getInstrumentation().targetContext.filesDir
-            .absolutePath + File.separator + reportName
-    Allure.resDirPath?.apply { Allure.resDirPath = resdp }
-    return resdp
+    if (Allure.resDirPath == null || "" == Allure.resDirPath){
+        Allure.resDirPath = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+                .absolutePath + File.separator + reportName
+    }
+
+    return Allure.resDirPath!!
 }
 
 /**

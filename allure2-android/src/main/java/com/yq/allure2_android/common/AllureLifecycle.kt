@@ -207,7 +207,7 @@ class AllureLifecycle(
     }
 
     fun addAttachment(name: String ,source: String?){
-        prepareAttachment(name ,"image/png" , ".png")
+        prepareAttachment(name ,"image/png" , ".png" ,source)
     }
 
     /**
