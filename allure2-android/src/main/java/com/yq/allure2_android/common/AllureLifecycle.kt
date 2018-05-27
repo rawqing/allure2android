@@ -1,11 +1,11 @@
 package com.yq.allure2_android.common
 
-import io.qameta.allure.AllureConstants.ATTACHMENT_FILE_SUFFIX
 import android.util.Log
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.*
 import com.yq.allure2_android.android.listenner.LifecycleNotifier
+import com.yq.allure2_android.common.resultRW.ATTACHMENT_FILE_SUFFIX
 import com.yq.allure2_android.model.TestResult
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import io.qameta.allure.model.*
@@ -206,14 +206,22 @@ class AllureLifecycle(
         writeAttachment(prepareAttachment(name, type, fileExtension), stream)
     }
 
-    fun prepareAttachment(name: String, type: String?, fileExtension: String?): String {
+    fun addAttachment(name: String ,source: String?){
+        prepareAttachment(name ,"image/png" , ".png")
+    }
+
+    /**
+     * @param name 指定的名称 ( My attachment )
+     * @param type 指定的类型 ( text/plain )
+     * @param fileExtension 扩展名 ( .txt )
+     */
+    fun prepareAttachment(name: String, type: String?, fileExtension: String?, source: String? = null): String {
         val currentStep = storage.getCurrentStep()
         currentStep.let{ Log.d(TAG,"Adding attachment to item with uuid $it") }
-        val source = UUID.randomUUID().toString() + ATTACHMENT_FILE_SUFFIX + fileExtension
         val attachment = Attachment()
                 .withName(if (isEmpty(name)) null else name)
                 .withType(if (isEmpty(type)) null else type)
-                .withSource(source)
+                .withSource(source?: makeAttachmentSource(fileExtension))
         storage.get(currentStep, WithAttachments::class.java).attachments.add(attachment)
         return attachment.source
     }
@@ -222,6 +230,9 @@ class AllureLifecycle(
         writer.write(attachmentSource, stream)
     }
 
+    fun makeAttachmentSource(fileExtension: String?):String{
+        return UUID.randomUUID().toString() + ATTACHMENT_FILE_SUFFIX + fileExtension
+    }
     private fun isEmpty(s: String?): Boolean {
         return s==null || s.isEmpty()
     }

@@ -8,9 +8,11 @@ import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.uiautomator.UiDevice
 import android.util.Log
 import java.io.File
-import java.util.*
+import com.yq.allure2_android.common.Allure
+
 
 val allureTag = "allure_"
+val reportName = "allure-results"
 
 
 fun isNull(obj : Any?):Boolean{
@@ -52,3 +54,55 @@ fun grantPermissions() {
     }
 }
 
+/**
+ * 获取可存取的目录路径
+ */
+fun getResDirPath() : String{
+    val resdp =  Allure.resDirPath ?: InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+            .absolutePath + File.separator + reportName
+    Allure.resDirPath?.apply { Allure.resDirPath = resdp }
+    return resdp
+}
+
+/**
+ * 创建一个res 目录
+ */
+fun mkresultDir(resultsDir: File? = null) :File{
+    if (resultsDir == null || !(resultsDir!!.exists())) {
+        val filesDir = getResDirPath()
+        val resD = File(filesDir)
+
+        if(!resD.exists()) {
+            val mk = resD.mkdirs()
+            Log.i(allureTag, "mkdir : $mk")
+        }
+        return resD
+    }
+    return resultsDir
+}
+
+/**
+ * 递归删除目录及子文件
+ */
+fun deleteFolderFile(file: File, deleteThisPath: Boolean) {
+    try {
+        if (file.isDirectory) { //目录
+            val files = file.listFiles()
+            for (i in files!!.indices) {
+                deleteFolderFile(files[i], true)
+            }
+        }
+        if (deleteThisPath) {
+            if (!file.isDirectory) { //如果是文件，删除
+                file.delete()
+            } else { //目录
+                if (file.listFiles()!!.isEmpty()) { //目录下没有文件或者目录，删除
+                    file.delete()
+                }
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+}

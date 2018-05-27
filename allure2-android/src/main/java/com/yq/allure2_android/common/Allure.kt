@@ -5,6 +5,7 @@ import com.yq.allure2_android.android.listenner.TestLifecycleListener
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.common.utils.FileAndroidResultsWriter
 import com.yq.allure2_android.common.utils.ServiceLoaderUtils
+import com.yq.allure2_android.common.utils.getResDirPath
 import io.qameta.allure.listener.ContainerLifecycleListener
 import io.qameta.allure.listener.FixtureLifecycleListener
 import io.qameta.allure.listener.StepLifecycleListener
@@ -13,6 +14,7 @@ import io.qameta.allure.model.Link
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.InputStream
 import kotlin.text.Charsets.UTF_8
 
@@ -20,6 +22,9 @@ import kotlin.text.Charsets.UTF_8
 object Allure {
     private val TXT_EXTENSION = ".txt"
     private val TEXT_PLAIN = "text/plain"
+
+    var resDir: File? = null
+    var resDirPath: String? = null
 
     val lifecycle: AllureLifecycle = getAllureLifecycle(FileAndroidResultsWriter())
 
@@ -70,6 +75,24 @@ object Allure {
     fun addAttachment(name: String, type: String,
                       content: InputStream, fileExtension: String) {
         lifecycle.addAttachment(name, type, fileExtension, content)
+    }
+
+    /**
+     * 作为截图专用的附件添加
+     * @param name 自定义的名称(若同一testcase中将出现多张截图 ,尽可能区分名称)
+     * @param takeScreenshot 截图并保存的过程 , 若成功 -> true , 反之亦然
+     */
+    fun addAttachment(name: String ,takeScreenshot: (file: File)-> Boolean){
+        val source = lifecycle.makeAttachmentSource(".png")
+
+        val isTakeed = takeScreenshot(File((resDirPath?:getResDirPath())+source))
+        if (isTakeed){
+            lifecycle.addAttachment(name ,source)
+        }
+    }
+
+    fun prepareAttachment(name: String, type: String?, fileExtension: String?): String {
+        return lifecycle.prepareAttachment(name,type ,fileExtension)
     }
 
     fun addByteAttachmentAsync(
