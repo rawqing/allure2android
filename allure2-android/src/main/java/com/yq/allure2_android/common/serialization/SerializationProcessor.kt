@@ -1,9 +1,9 @@
-package ru.tinkoff.allure.serialization
+package com.yq.allure2_android.common.serialization
 
 import java.io.File
 
 /**
- * @author Badya on 18.04.2017.
+ * @author king
  */
 interface SerializationProcessor : Serializer, Deserializer
 

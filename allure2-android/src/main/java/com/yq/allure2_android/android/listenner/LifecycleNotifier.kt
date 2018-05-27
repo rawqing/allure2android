@@ -1,12 +1,11 @@
 package com.yq.allure2_android.android.listenner
 
+import com.yq.allure2_android.model.TestResult
 import io.qameta.allure.listener.ContainerLifecycleListener
 import io.qameta.allure.listener.FixtureLifecycleListener
 import io.qameta.allure.listener.StepLifecycleListener
-import io.qameta.allure.listener.TestLifecycleListener
 import io.qameta.allure.model.FixtureResult
 import io.qameta.allure.model.StepResult
-import io.qameta.allure.model.TestResult
 import io.qameta.allure.model.TestResultContainer
 
 class LifecycleNotifier(

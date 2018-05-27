@@ -1,7 +1,6 @@
-package ru.tinkoff.allure.android
+package com.yq.allure2_android.android.listenner
 
 import android.support.test.internal.runner.listener.InstrumentationRunListener
-import android.support.test.uiautomator.UiDevice
 import com.yq.allure2_android.common.Allure
 import org.junit.runner.Description
 import org.junit.runner.Result
@@ -12,25 +11,33 @@ import com.yq.allure2_android.common.utils.ResultsUtils.createLabel
 import com.yq.allure2_android.common.utils.ResultsUtils.createLink
 import com.yq.allure2_android.common.utils.ResultsUtils.getHostName
 import com.yq.allure2_android.common.utils.ResultsUtils.getThreadName
-import io.qameta.allure.model.TestResult
 import io.qameta.allure.*
-import io.qameta.allure.model.Label
-import io.qameta.allure.model.StatusDetails
-import io.qameta.allure.model.Link
 import org.junit.Ignore
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.text.Charsets.UTF_8
+import com.yq.allure2_android.common.utils.ResultsUtils.getStatusDetails
+import com.yq.allure2_android.common.utils.ResultsUtils.getStatus
+import com.yq.allure2_android.common.utils.grantPermissions
+import com.yq.allure2_android.model.TestResult
+import io.qameta.allure.model.*
+import io.qameta.allure.model.Link
 
 
 /**
- * @author Badya on 05.06.2017.
+ * @author king
  */
-class AllureAndroidListener : InstrumentationRunListener(){
+open class AllureAndroidListener : InstrumentationRunListener(){
     private val lifecycle = Allure.lifecycle
     private val MD_5 = "md5"
-    private val testCases = object : InheritableThreadLocal<String>() {
+    private var testCases = object : InheritableThreadLocal<String>() {
+        override fun initialValue(): String {
+            return UUID.randomUUID().toString()
+        }
+    }
+
+    private var testContainer = object : InheritableThreadLocal<String>() {
         override fun initialValue(): String {
             return UUID.randomUUID().toString()
         }
@@ -41,37 +48,74 @@ class AllureAndroidListener : InstrumentationRunListener(){
     override fun testStarted(description: Description) {
         val uuid = testCases.get()
         val result = createTestResult(uuid, description)
-        lifecycle.scheduleTestCase(result)
+        lifecycle.scheduleTestCase(testContainer.get(),result)
         lifecycle.startTestCase(uuid)
     }
 
     override fun testFinished(description: Description) {
+        val uuid = testCases.get()
+        testCases.remove()
+        lifecycle.updateTestCase { this.status = this.status?: Status.PASSED }
+
+        lifecycle.stopTestCase(uuid)
+        lifecycle.writeTestCase(uuid)
     }
 
     override fun testFailure(failure: Failure) {
+        val uuid = testCases.get()
+        lifecycle.updateTestCase(uuid, {
+            this
+                    .withStatus(getStatus(failure.exception))
+                    .withStatusDetails(getStatusDetails(failure.exception))
+            }
+        )
+    }
+
+    override fun testAssumptionFailure(failure: Failure?) {
+        val uuid = testCases.get()
+        lifecycle.updateTestCase(uuid, {
+            this.withStatus(Status.SKIPPED)
+                    .withStatusDetails(getStatusDetails(failure!!.exception))
+            }
+        )
+    }
+
+    @Throws(Exception::class)
+    override fun testIgnored(description: Description) {
+        val uuid = testCases.get()
+        testCases.remove()
+
+        val result = createTestResult(uuid, description)
+        result.status = Status.SKIPPED
+        result.statusDetails = getIgnoredMessage(description)
+        result.start = System.currentTimeMillis()
+
+        lifecycle.scheduleTestCase(result)
+        lifecycle.stopTestCase(uuid)
+        lifecycle.writeTestCase(uuid)
     }
 
     override fun testRunStarted(description: Description) {
         grantPermissions()
-        //do nothing
+        val uuid = testContainer.get()
+        var container = TestResultContainer()
+                .withUuid(uuid)
+        lifecycle.startTestContainer(container)
     }
 
     override fun testRunFinished(result: Result) {
-        //do nothing
+        val uuid = testContainer.get()
+        testContainer.remove()
+
+        lifecycle.stopTestContainer(uuid)
+        lifecycle.writeTestContainer(uuid)
     }
 
 
     private fun suiteFailed(failure: Failure) {
     }
 
-    private fun grantPermissions() {
-        with(UiDevice.getInstance(instrumentation)) {
-            executeShellCommand("pm grant " + instrumentation.context.packageName + " android.permission.WRITE_EXTERNAL_STORAGE")
-            executeShellCommand("pm grant " + instrumentation.targetContext.packageName + " android.permission.WRITE_EXTERNAL_STORAGE")
-            executeShellCommand("pm grant " + instrumentation.context.packageName + " android.permission.READ_EXTERNAL_STORAGE")
-            executeShellCommand("pm grant " + instrumentation.targetContext.packageName + " android.permission.READ_EXTERNAL_STORAGE")
-        }
-    }
+
 
     private fun createTestResult(uuid: String, description: Description): TestResult {
         val className = description.className

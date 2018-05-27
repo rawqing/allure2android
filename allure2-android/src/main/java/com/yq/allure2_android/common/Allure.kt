@@ -1,13 +1,13 @@
 package com.yq.allure2_android.common
 
 import com.yq.allure2_android.android.listenner.LifecycleNotifier
+import com.yq.allure2_android.android.listenner.TestLifecycleListener
+import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.common.utils.FileAndroidResultsWriter
 import com.yq.allure2_android.common.utils.ServiceLoaderUtils
-import io.qameta.allure.AllureResultsWriter
 import io.qameta.allure.listener.ContainerLifecycleListener
 import io.qameta.allure.listener.FixtureLifecycleListener
 import io.qameta.allure.listener.StepLifecycleListener
-import io.qameta.allure.listener.TestLifecycleListener
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Link
 import kotlinx.coroutines.experimental.CommonPool

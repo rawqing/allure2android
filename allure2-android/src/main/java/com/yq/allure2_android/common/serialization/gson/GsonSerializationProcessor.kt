@@ -1,9 +1,9 @@
-package ru.tinkoff.allure.serialization.gson
+package com.yq.allure2_android.common.serialization.gson
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
-import ru.tinkoff.allure.serialization.SerializationProcessor
+import com.yq.allure2_android.common.serialization.SerializationProcessor
 import java.io.*
 
 /**
@@ -25,7 +25,7 @@ object GsonSerializationProcessor : SerializationProcessor {
                 gson.toJson(src, src.javaClass, gson.newJsonWriter(it))
             }
         } catch (e: IOException) {
-            throw JsonIOException("Failed to serialize to file ${file.absolutePath}", e)
+            throw JsonIOException("Failed to serialize to file ${file.absolutePath}", e) as Throwable
         }
     }
 

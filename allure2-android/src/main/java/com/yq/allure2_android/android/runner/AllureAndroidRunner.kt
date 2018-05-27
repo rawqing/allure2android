@@ -1,11 +1,12 @@
-package ru.tinkoff.allure.android
+package com.yq.allure2_android.android.runner
 
 import android.os.Bundle
 import android.support.annotation.Keep
 import android.support.test.runner.AndroidJUnitRunner
+import com.yq.allure2_android.android.listenner.AllureAndroidListener
 
 /**
- * @author Badya on 30.03.2017.
+ * @author king
  */
 
 @Suppress("unused")
@@ -18,5 +19,6 @@ open class AllureAndroidRunner : AndroidJUnitRunner() {
                 }
                 ?: AllureAndroidListener::class.java.name)
         super.onCreate(arguments)
+
     }
 }
