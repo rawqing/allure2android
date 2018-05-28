@@ -8,7 +8,7 @@ import com.yq.allure2_android.android.listenner.LifecycleNotifier
 import com.yq.allure2_android.common.resultRW.ATTACHMENT_FILE_SUFFIX
 import com.yq.allure2_android.model.TestResult
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
-import io.qameta.allure.model.*
+import com.yq.allure2_android.model.*
 
 
 class AllureLifecycle(
@@ -206,10 +206,26 @@ class AllureLifecycle(
         writeAttachment(prepareAttachment(name, type, fileExtension), stream)
     }
 
+    /**
+     * 主要针对于自动截图功能( 会自动保存的 , 不用write)
+     */
     fun addAttachment(name: String ,source: String?){
         prepareAttachment(name ,"image/png" , ".png" ,source)
     }
 
+    /**
+     * 主要针对于删除文件后的处理操作 ( 删除关联的 Attachment )
+     */
+    fun removeAttachment(){
+        val currentStep = storage.getCurrentStep()
+        storage.get(currentStep, WithAttachments::class.java).attachments?.apply {
+            if (this.isEmpty()){
+                println("empty Attachments ,can not remove it .")
+                return
+            }
+            this.removeAt(this.size - 1)
+        }
+    }
     /**
      * @param name 指定的名称 ( My attachment )
      * @param type 指定的类型 ( text/plain )

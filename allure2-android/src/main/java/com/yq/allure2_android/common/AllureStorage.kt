@@ -1,12 +1,12 @@
 package com.yq.allure2_android.common
 
 import com.yq.allure2_android.model.TestResult
-import io.qameta.allure.model.StepResult
-import io.qameta.allure.model.TestResultContainer
-import io.qameta.allure.model.WithSteps
+import com.yq.allure2_android.model.StepResult
+import com.yq.allure2_android.model.TestResultContainer
+import com.yq.allure2_android.model.WithSteps
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import io.qameta.allure.model.FixtureResult
+import com.yq.allure2_android.model.FixtureResult
 
 
 /**

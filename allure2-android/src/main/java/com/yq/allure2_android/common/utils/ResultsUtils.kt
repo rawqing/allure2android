@@ -5,17 +5,15 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Log
 import com.google.common.io.Resources
+import com.yq.allure2_android.common.utils.PropertiesUtils.loadAllureProperties
 import com.yq.allure2_android.common.utils.ResultsUtils.ALLURE_DESCRIPTIONS_PACKAGE
 import com.yq.allure2_android.common.utils.ResultsUtils.ALLURE_SEPARATE_LINES_SYSPROP
 import com.yq.allure2_android.common.utils.ResultsUtils.MD_5
 import com.yq.allure2_android.common.utils.ResultsUtils.TAG
 import com.yq.allure2_android.common.utils.ResultsUtils.cachedHost
-import io.qameta.allure.*
-import io.qameta.allure.model.*
-import io.qameta.allure.model.Link
-import io.qameta.allure.util.PropertiesUtils.loadAllureProperties
-import io.qameta.allure.util.ResultsUtils
-import org.slf4j.LoggerFactory
+import com.yq.allure2_android.model.annotations.*
+import com.yq.allure2_android.model.*
+import com.yq.allure2_android.model.Link
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -125,15 +123,15 @@ object ResultsUtils {
         return createLink(value, null, null, TMS_LINK_TYPE)
     }
 
-    fun createLink(link: io.qameta.allure.Link): Link {
+    fun createLink(link: com.yq.allure2_android.model.annotations.Link): Link {
         return createLink(link.value, link.name, link.url, link.type)
     }
 
-    fun createLink(link: io.qameta.allure.Issue): Link {
+    fun createLink(link: com.yq.allure2_android.model.annotations.Issue): Link {
         return createIssueLink(link.value)
     }
 
-    fun createLink(link: io.qameta.allure.TmsLink): Link {
+    fun createLink(link: com.yq.allure2_android.model.annotations.TmsLink): Link {
         return createTmsLink(link.value)
     }
 

@@ -6,17 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import io.qameta.allure.model.Attachment;
-import io.qameta.allure.model.Parameter;
-import io.qameta.allure.model.Stage;
-import io.qameta.allure.model.Status;
-import io.qameta.allure.model.StatusDetails;
-import io.qameta.allure.model.StepResult;
-import io.qameta.allure.model.WithAttachments;
-import io.qameta.allure.model.WithParameters;
-import io.qameta.allure.model.WithStatusDetails;
-import io.qameta.allure.model.WithSteps;
-
 
 /**
  * <p>Java class for ExecutableItem complex type.
@@ -249,6 +238,14 @@ public abstract class ExecutableItem implements Serializable, WithAttachments, W
             attachments = new ArrayList<Attachment>();
         }
         return attachments;
+    }
+
+    public void removeAttachments(){
+        if (attachments.isEmpty()) {
+            System.out.println("empty Attachments ,can not remove it .");
+            return;
+        }
+        attachments.remove(attachments.size() - 1);
     }
 
     public void setAttachments(List<Attachment> attachments) {

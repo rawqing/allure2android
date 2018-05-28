@@ -4,8 +4,7 @@ import com.yq.allure2_android.model.TestResult;
 
 import java.io.InputStream;
 
-import io.qameta.allure.AllureResultsWriteException;
-import io.qameta.allure.model.TestResultContainer;
+import com.yq.allure2_android.model.TestResultContainer;
 
 /**
  * @author charlie (Dmitry Baev).
@@ -17,8 +16,6 @@ public interface AllureResultsWriter {
      * Writes Allure test result bean.
      *
      * @param testResult the given bean to write.
-     * @throws AllureResultsWriteException if some error occurs
-     *                                     during operation.
      */
     void write(TestResult testResult);
 
@@ -26,8 +23,6 @@ public interface AllureResultsWriter {
      * Writes Allure test result container bean.
      *
      * @param testResultContainer the given bean to write.
-     * @throws AllureResultsWriteException if some error occurs
-     *                                     during operation.
      */
     void write(TestResultContainer testResultContainer);
 

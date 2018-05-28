@@ -6,10 +6,10 @@ import com.yq.allure2_android.common.Allure
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.common.serialization.SerializationProcessor
 import com.yq.allure2_android.common.serialization.gson.GsonSerializationProcessor
+import com.yq.allure2_android.common.utils.AllureUtils.generateTestResultContainerName
+import com.yq.allure2_android.common.utils.AllureUtils.generateTestResultName
 import com.yq.allure2_android.model.TestResult
-import io.qameta.allure.AllureUtils.generateTestResultContainerName
-import io.qameta.allure.AllureUtils.generateTestResultName
-import io.qameta.allure.model.TestResultContainer
+import com.yq.allure2_android.model.TestResultContainer
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

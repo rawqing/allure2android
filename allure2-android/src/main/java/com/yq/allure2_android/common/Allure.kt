@@ -1,16 +1,20 @@
 package com.yq.allure2_android.common
 
+import android.support.test.InstrumentationRegistry
+import android.support.test.uiautomator.UiDevice
+import android.util.Log
 import com.yq.allure2_android.android.listenner.LifecycleNotifier
-import com.yq.allure2_android.android.listenner.TestLifecycleListener
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.common.utils.FileAndroidResultsWriter
 import com.yq.allure2_android.common.utils.ServiceLoaderUtils
+import com.yq.allure2_android.common.utils.allureTag
 import com.yq.allure2_android.common.utils.getResDirPath
-import io.qameta.allure.listener.ContainerLifecycleListener
-import io.qameta.allure.listener.FixtureLifecycleListener
-import io.qameta.allure.listener.StepLifecycleListener
-import io.qameta.allure.model.Label
-import io.qameta.allure.model.Link
+import com.yq.allure2_android.model.listeners.ContainerLifecycleListener
+import com.yq.allure2_android.model.listeners.FixtureLifecycleListener
+import com.yq.allure2_android.model.listeners.StepLifecycleListener
+import com.yq.allure2_android.model.listeners.TestLifecycleListener
+import com.yq.allure2_android.model.Label
+import com.yq.allure2_android.model.Link
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.io.ByteArrayInputStream
@@ -19,9 +23,10 @@ import java.io.InputStream
 import kotlin.text.Charsets.UTF_8
 
 
-object Allure {
+public object Allure {
     private val TXT_EXTENSION = ".txt"
     private val TEXT_PLAIN = "text/plain"
+    private val TAG = "${allureTag}Allure"
 
     var resDir: File? = null
     var resDirPath: String? = null
@@ -81,14 +86,29 @@ object Allure {
      * 作为截图专用的附件添加
      * @param name 自定义的名称(若同一testcase中将出现多张截图 ,尽可能区分名称)
      * @param takeScreenshot 截图并保存的过程 , 若成功 -> true , 反之亦然
+     * @return 生产文件的绝对路径
      */
-    fun addAttachment(name: String ,takeScreenshot: (file: File)-> Boolean){
+    fun addAttachment(name: String ,takeScreenshot: (file: File)-> Boolean) :String{
         val source = lifecycle.makeAttachmentSource(".png")
 
-        val isTakeed = takeScreenshot(File((resDirPath?:getResDirPath())+source))
+        val filePath = (resDirPath?:getResDirPath())+source
+        val isTakeed = takeScreenshot(File(filePath))
         if (isTakeed){
             lifecycle.addAttachment(name ,source)
         }
+        return filePath
+    }
+    fun addAttachment(name: String) :String{
+        return addAttachment(name ,{
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(it)
+        })
+    }
+    fun removeAttachment(filePath:String){
+        if (!filePath.isEmpty()){
+            val deled = File(filePath).delete()
+            Log.i(TAG,"file [$deled] deleted.")
+        }
+        lifecycle.removeAttachment()
     }
 
     fun prepareAttachment(name: String, type: String?, fileExtension: String?): String {

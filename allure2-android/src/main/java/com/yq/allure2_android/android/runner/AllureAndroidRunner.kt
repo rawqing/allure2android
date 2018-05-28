@@ -17,6 +17,7 @@ import java.io.File
 @Suppress("unused")
 @Keep
 open class AllureAndroidRunner : AndroidJUnitRunner() {
+
     override fun onCreate(arguments: Bundle) {
         arguments.putCharSequence("listener", arguments.getCharSequence("listener")
                 ?.let {

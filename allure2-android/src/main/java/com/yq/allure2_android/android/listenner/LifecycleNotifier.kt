@@ -1,19 +1,20 @@
 package com.yq.allure2_android.android.listenner
 
+import com.yq.allure2_android.model.FixtureResult
+import com.yq.allure2_android.model.StepResult
 import com.yq.allure2_android.model.TestResult
-import io.qameta.allure.listener.ContainerLifecycleListener
-import io.qameta.allure.listener.FixtureLifecycleListener
-import io.qameta.allure.listener.StepLifecycleListener
-import io.qameta.allure.model.FixtureResult
-import io.qameta.allure.model.StepResult
-import io.qameta.allure.model.TestResultContainer
+import com.yq.allure2_android.model.TestResultContainer
+import com.yq.allure2_android.model.listeners.ContainerLifecycleListener
+import com.yq.allure2_android.model.listeners.FixtureLifecycleListener
+import com.yq.allure2_android.model.listeners.StepLifecycleListener
+import com.yq.allure2_android.model.listeners.TestLifecycleListener
 
 class LifecycleNotifier(
-        private val containerListeners: List<ContainerLifecycleListener>, 
-        private val testListeners: List<TestLifecycleListener>, 
-        private val fixtureListeners: List<FixtureLifecycleListener>, 
+        private val containerListeners: List<ContainerLifecycleListener>,
+        private val testListeners: List<TestLifecycleListener>,
+        private val fixtureListeners: List<FixtureLifecycleListener>,
         private val stepListeners: List<StepLifecycleListener>
-) : ContainerLifecycleListener, TestLifecycleListener, FixtureLifecycleListener, StepLifecycleListener{
+) : ContainerLifecycleListener, FixtureLifecycleListener, StepLifecycleListener ,TestLifecycleListener{
 
 
 

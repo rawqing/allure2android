@@ -1,4 +1,4 @@
-package com.yq.allure2_android.android.listenner;
+package com.yq.allure2_android.model.listeners;
 
 
 import com.yq.allure2_android.model.TestResult;

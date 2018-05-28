@@ -11,7 +11,7 @@ import com.yq.allure2_android.common.utils.ResultsUtils.createLabel
 import com.yq.allure2_android.common.utils.ResultsUtils.createLink
 import com.yq.allure2_android.common.utils.ResultsUtils.getHostName
 import com.yq.allure2_android.common.utils.ResultsUtils.getThreadName
-import io.qameta.allure.*
+import com.yq.allure2_android.model.annotations.*
 import org.junit.Ignore
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -20,9 +20,8 @@ import kotlin.text.Charsets.UTF_8
 import com.yq.allure2_android.common.utils.ResultsUtils.getStatusDetails
 import com.yq.allure2_android.common.utils.ResultsUtils.getStatus
 import com.yq.allure2_android.common.utils.grantPermissions
-import com.yq.allure2_android.model.TestResult
-import io.qameta.allure.model.*
-import io.qameta.allure.model.Link
+import com.yq.allure2_android.model.*
+import com.yq.allure2_android.model.Link
 
 
 /**
@@ -141,7 +140,7 @@ open class AllureAndroidListener : InstrumentationRunListener(){
                 )
         testResult.labels.addAll(getLabels(description))
         description.getAnnotation(DisplayName::class.java)?.value?.apply { testResult.name = this }
-        description.getAnnotation(io.qameta.allure.Description::class.java)?.value?.apply { testResult.description = this }
+        description.getAnnotation(com.yq.allure2_android.model.annotations.Description::class.java)?.value?.apply { testResult.description = this }
         return testResult
     }
 
@@ -176,19 +175,19 @@ open class AllureAndroidListener : InstrumentationRunListener(){
         return StatusDetails().withMessage(message)
     }
 
-    private fun getLinks(result: Description): List<Link> {
-        return listOfNotNull(
-                result.getAnnotation(io.qameta.allure.Link::class.java)?.let { createLink(it) },
+    private fun getLinks(result: Description): MutableList<Link> {
+        return mutableListOf(
+                result.getAnnotation(com.yq.allure2_android.model.annotations.Link::class.java)?.let { createLink(it) },
                 result.getAnnotation(Issue::class.java)?.let { createLink(it) },
                 result.getAnnotation(TmsLink::class.java)?.let { createLink(it) },
-                result.testClass.getAnnotation(io.qameta.allure.Link::class.java)?.let { createLink(it) },
+                result.testClass.getAnnotation(com.yq.allure2_android.model.annotations.Link::class.java)?.let { createLink(it) },
                 result.testClass.getAnnotation(Issue::class.java)?.let { createLink(it) },
                 result.testClass.getAnnotation(TmsLink::class.java)?.let { createLink(it) }
-        )
+        ).filterNotNull().toMutableList()
     }
 
-    private fun getLabels(result: Description): List<Label> {
-        return listOfNotNull(
+    private fun getLabels(result: Description): MutableList<Label>{
+        return mutableListOf(
                 result.getAnnotation(Epic::class.java)?.let { createLabel(it) },
                 result.getAnnotation(Feature::class.java)?.let { createLabel(it) },
                 result.getAnnotation(Story::class.java)?.let { createLabel(it) },
@@ -199,7 +198,7 @@ open class AllureAndroidListener : InstrumentationRunListener(){
                 result.testClass.getAnnotation(Story::class.java)?.let { createLabel(it) },
                 result.testClass.getAnnotation(Severity::class.java)?.let { createLabel(it) },
                 result.testClass.getAnnotation(Owner::class.java)?.let { createLabel(it) }
-        )
+        ).filterNotNull().toMutableList()
     }
 
 }

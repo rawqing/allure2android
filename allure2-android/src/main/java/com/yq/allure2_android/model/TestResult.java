@@ -5,15 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import io.qameta.allure.model.Attachment;
-import io.qameta.allure.model.Label;
-import io.qameta.allure.model.Link;
-import io.qameta.allure.model.Parameter;
-import io.qameta.allure.model.Stage;
-import io.qameta.allure.model.Status;
-import io.qameta.allure.model.StatusDetails;
-import io.qameta.allure.model.StepResult;
-import io.qameta.allure.model.WithLinks;
 
 public class TestResult
         extends ExecutableItem

@@ -15,7 +15,7 @@ allure {
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.yq.allure2_android"
+        applicationId "com.yq.espui"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
@@ -51,9 +51,23 @@ dependencies {
 
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation project(":allure2-android")
     androidTestImplementation "io.qameta.allure:allure-java-commons:2.6.0"
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
 
+}
+
+task copyTask(type: Copy) {
+    from 'apks/app-debug.apk'
+    into 'build/outputs/apk/debug/'
+    rename {
+        'app-debug.apk'
+    }
+}
+android.testVariants.all {variant ->
+    variant.assemble.doLast {
+        copyTask.execute()
+    }
 }
