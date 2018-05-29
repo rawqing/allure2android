@@ -91,7 +91,7 @@ public object Allure {
     fun addAttachment(name: String ,takeScreenshot: (file: File)-> Boolean) :String{
         val source = lifecycle.makeAttachmentSource(".png")
 
-        val filePath = (resDirPath?:getResDirPath())+source
+        val filePath = (resDirPath?:getResDirPath()) + File.separator + source
         val isTakeed = takeScreenshot(File(filePath))
         if (isTakeed){
             lifecycle.addAttachment(name ,source)
@@ -100,7 +100,7 @@ public object Allure {
     }
     fun addAttachment(name: String) :String{
         return addAttachment(name ,{
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(it)
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(it ,0.8f,80)
         })
     }
     fun removeAttachment(filePath:String){

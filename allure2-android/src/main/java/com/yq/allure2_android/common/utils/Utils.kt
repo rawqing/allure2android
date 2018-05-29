@@ -71,17 +71,17 @@ fun getResDirPath() : String{
  * 创建一个res 目录
  */
 fun mkresultDir(resultsDir: File? = null) :File{
-    if (resultsDir == null || !(resultsDir!!.exists())) {
+    var resDir: File? = resultsDir
+    if (resultsDir == null) {
         val filesDir = getResDirPath()
-        val resD = File(filesDir)
-
-        if(!resD.exists()) {
-            val mk = resD.mkdirs()
-            Log.i(allureTag, "mkdir : $mk")
-        }
-        return resD
+        resDir = File(filesDir)
     }
-    return resultsDir
+
+    if(!resDir!!.exists()) {
+        val mk = resDir.mkdirs()
+        Log.i(allureTag, "mkdir : $mk")
+    }
+    return resDir
 }
 
 /**
@@ -108,4 +108,23 @@ fun deleteFolderFile(file: File, deleteThisPath: Boolean) {
         e.printStackTrace()
     }
 
+}
+
+/**
+ * 获得sd card的File
+ */
+fun sdDirectory(path: String = reportName): File {
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        return File(Environment.getExternalStorageDirectory(), path)
+    } else {
+        return getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
+    }
+}
+
+/**
+ * sd card File的绝对路径
+ */
+fun sdPath(path: String = reportName): String {
+    return sdDirectory(path).absolutePath
 }
