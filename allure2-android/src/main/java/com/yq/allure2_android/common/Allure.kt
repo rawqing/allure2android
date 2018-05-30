@@ -36,10 +36,6 @@ public object Allure {
     val lifecycle: AllureLifecycle = getAllureLifecycle(FileAndroidResultsWriter())
 
 
-//    val CACHE = 0
-//    val SDCARD = 1
-//
-//    var site = 0
 
 
     fun getResultFile(): File? {
@@ -65,9 +61,9 @@ public object Allure {
         val path = getInstrumentation().targetContext
                 .filesDir.absolutePath + File.separator + resultsName
         val file = File(path)
-        return if (makeDir(file)!!) {
-            file
-        } else null
+        makeDir(file)
+
+        return file
     }
 
     /**
@@ -81,16 +77,13 @@ public object Allure {
             e.printStackTrace()
         }
 
-        val file: File
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            file = File(Environment.getExternalStorageDirectory(), resultsName)
+        val file: File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            File(Environment.getExternalStorageDirectory(), resultsName)
         } else {
-            file = getInstrumentation().context.getDir(resultsName, Context.MODE_PRIVATE)
+            getInstrumentation().context.getDir(resultsName, Context.MODE_PRIVATE)
         }
-        return if (makeDir(file)!!) {
-            file
-        } else null
-
+        makeDir(file)
+        return file
     }
 
     /**
@@ -102,6 +95,9 @@ public object Allure {
         if (file != null) {
             if (file.exists()) {
                 deleteFolderFile(file, true)
+            }
+            if (file.isDirectory) {
+                return true
             }
             val mk = file.mkdirs()
             Log.i(TAG, "mkdir : $mk")
