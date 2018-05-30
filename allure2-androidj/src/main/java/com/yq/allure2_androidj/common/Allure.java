@@ -69,7 +69,7 @@ public final class Allure {
         if (makeDir(file)) {
             return file;
         }
-        return null;
+        return file;
     }
 
     /**
@@ -77,11 +77,11 @@ public final class Allure {
      * @return
      */
     private static File getSdcardDir(){
-        try {
-            Tools.grantPermissions();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Tools.grantPermissions();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         File file;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             file =  new File(Environment.getExternalStorageDirectory(), resultsName);
@@ -91,7 +91,7 @@ public final class Allure {
         if (makeDir(file)) {
             return file;
         }
-        return null;
+        return file;
 
     }
 
@@ -105,8 +105,12 @@ public final class Allure {
             if (file.exists()) {
                 Tools.deleteFolderFile(file,true);
             }
+            if (file.isDirectory()) {
+                Log.i(TAG, "mkdir : '"+file.getAbsolutePath() + "' is directory !");
+                return true;
+            }
             Boolean mk = file.mkdirs();
-            Log.i(TAG, "mkdir : "+mk);
+            Log.i(TAG, "mkdir : '"+file.getAbsolutePath() + "'"+mk);
             return mk;
         }
         return false;
