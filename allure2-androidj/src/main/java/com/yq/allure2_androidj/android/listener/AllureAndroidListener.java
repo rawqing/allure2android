@@ -72,6 +72,8 @@ public class AllureAndroidListener extends InstrumentationRunListener {
     @Override
     public void testRunStarted(final Description description) throws Exception {
         grantPermissions();
+        Allure.getResultFile();
+
         String uuid = testContainer.get();
         TestResultContainer tc = new TestResultContainer()
                 .withUuid(uuid);

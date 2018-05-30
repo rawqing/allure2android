@@ -9,11 +9,13 @@ import android.util.Log;
 
 import com.yq.allure2_androidj.common.feature.Screenshot;
 import com.yq.allure2_androidj.common.utils.Objects;
+import com.yq.allure2_androidj.common.utils.Tools;
 import com.yq.allure2_androidj.model.Label;
 import com.yq.allure2_androidj.model.Link;
 import com.yq.allure2_androidj.model.annotations.Tag;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -34,32 +36,37 @@ public final class Allure {
     private static AllureLifecycle lifecycle;
     private static File resultFile = null;
 
-    public static String resultsName = "allure-results";
+    public static String resultsName = "allure-results" + File.separator;
+//    public static final int CACHE = 0;
+//    public static final int SDCARD = 1;
+//
+//    public static int site = 0;
 
 
     public static File getResultFile() {
         if (resultFile == null) {
-            resultFile = getCacheDir();
+            resultFile = getSdcardDir();
+            if (resultFile == null) {
+                resultFile = getCacheDir();
+            }
         }
         return resultFile;
     }
 
     public static void setResultFile(File resultFile) {
         Allure.resultFile = resultFile;
+        makeDir(resultFile);
     }
 
     /**
      * 在app缓存目录创建results目录
      * @return
      */
-    public static File getCacheDir(){
+    private static File getCacheDir(){
         String path = getInstrumentation().getTargetContext()
                 .getFilesDir().getAbsolutePath() + File.separator + resultsName;
         File file = new File(path);
-        if (notNone(file)) {
-            if (file.exists())  return file;
-            Boolean mk = file.mkdirs();
-            Log.i(TAG, "mkdir : "+mk);
+        if (makeDir(file)) {
             return file;
         }
         return null;
@@ -69,12 +76,40 @@ public final class Allure {
      * 在sdcard 下创建目录
      * @return
      */
-    public static File getSdcardDir(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return new File(Environment.getExternalStorageDirectory(), resultsName);
-        } else {
-            return getInstrumentation().getContext().getDir(resultsName, Context.MODE_PRIVATE);
+    private static File getSdcardDir(){
+        try {
+            Tools.grantPermissions();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        File file;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            file =  new File(Environment.getExternalStorageDirectory(), resultsName);
+        } else {
+            file = getInstrumentation().getContext().getDir(resultsName, Context.MODE_PRIVATE);
+        }
+        if (makeDir(file)) {
+            return file;
+        }
+        return null;
+
+    }
+
+    /**
+     * 创建文件 , 创建前先删除
+     * @param file
+     * @return
+     */
+    private static Boolean makeDir(File file) {
+        if (notNone(file)) {
+            if (file.exists()) {
+                Tools.deleteFolderFile(file,true);
+            }
+            Boolean mk = file.mkdirs();
+            Log.i(TAG, "mkdir : "+mk);
+            return mk;
+        }
+        return false;
     }
 
     public static AllureLifecycle getLifecycle() {

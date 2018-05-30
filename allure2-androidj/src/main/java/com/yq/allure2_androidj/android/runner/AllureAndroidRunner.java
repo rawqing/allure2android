@@ -6,6 +6,8 @@ import android.support.test.runner.AndroidJUnitRunner;
 import com.yq.allure2_androidj.android.listener.AllureAndroidListener;
 import com.yq.allure2_androidj.common.Allure;
 
+import java.io.File;
+
 
 public class AllureAndroidRunner extends AndroidJUnitRunner {
 
@@ -19,7 +21,5 @@ public class AllureAndroidRunner extends AndroidJUnitRunner {
         arguments.putCharSequence(listener, sequence);
 
         super.onCreate(arguments);
-
-        Allure.setResultFile(Allure.getSdcardDir());
     }
 }
