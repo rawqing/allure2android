@@ -3,7 +3,7 @@ package com.yq.allure2_android.common
 import android.support.test.InstrumentationRegistry
 import android.support.test.uiautomator.UiDevice
 import android.util.Log
-import com.yq.allure2_android.android.listenner.LifecycleNotifier
+import com.yq.allure2_android.android.listener.LifecycleNotifier
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.common.utils.FileAndroidResultsWriter
 import com.yq.allure2_android.common.utils.ServiceLoaderUtils

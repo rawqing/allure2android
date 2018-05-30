@@ -1,4 +1,4 @@
-package com.yq.allure2_android.android.listenner
+package com.yq.allure2_android.android.listener
 
 import com.yq.allure2_android.model.FixtureResult
 import com.yq.allure2_android.model.StepResult

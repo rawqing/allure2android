@@ -4,8 +4,8 @@ import android.util.Log
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.*
-import com.yq.allure2_android.android.listenner.LifecycleNotifier
-import com.yq.allure2_android.common.resultRW.ATTACHMENT_FILE_SUFFIX
+import com.yq.allure2_android.android.listener.LifecycleNotifier
+import com.yq.allure2_android.common.utils.AllureConstants.ATTACHMENT_FILE_SUFFIX
 import com.yq.allure2_android.model.TestResult
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
 import com.yq.allure2_android.model.*

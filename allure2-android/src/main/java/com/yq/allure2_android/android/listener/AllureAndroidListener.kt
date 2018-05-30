@@ -1,4 +1,4 @@
-package com.yq.allure2_android.android.listenner
+package com.yq.allure2_android.android.listener
 
 import android.support.test.internal.runner.listener.InstrumentationRunListener
 import com.yq.allure2_android.common.Allure

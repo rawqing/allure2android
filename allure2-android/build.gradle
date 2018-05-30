@@ -1,6 +1,20 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven'
+
+
+group = 'com.yq.allure2android'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://C:/Users/jlccsz/.m2/repository")
+            pom.groupId = "com.yq.allure2android"
+            pom.version = '1.0.1'
+            pom.artifactId = 'allure2android'
+        }
+    }
+}
 
 android {
     compileSdkVersion 27

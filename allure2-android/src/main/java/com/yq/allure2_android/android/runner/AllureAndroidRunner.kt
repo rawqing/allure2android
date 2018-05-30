@@ -3,7 +3,7 @@ package com.yq.allure2_android.android.runner
 import android.os.Bundle
 import android.support.annotation.Keep
 import android.support.test.runner.AndroidJUnitRunner
-import com.yq.allure2_android.android.listenner.AllureAndroidListener
+import com.yq.allure2_android.android.listener.AllureAndroidListener
 import com.yq.allure2_android.common.Allure
 import com.yq.allure2_android.common.utils.deleteFolderFile
 import com.yq.allure2_android.common.utils.getResDirPath
