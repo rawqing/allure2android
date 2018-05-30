@@ -5,9 +5,7 @@ import android.support.annotation.Keep
 import android.support.test.runner.AndroidJUnitRunner
 import com.yq.allure2_android.android.listener.AllureAndroidListener
 import com.yq.allure2_android.common.Allure
-import com.yq.allure2_android.common.utils.deleteFolderFile
-import com.yq.allure2_android.common.utils.getResDirPath
-import com.yq.allure2_android.common.utils.mkresultDir
+import com.yq.allure2_android.common.utils.*
 import java.io.File
 
 /**
@@ -26,10 +24,11 @@ open class AllureAndroidRunner : AndroidJUnitRunner() {
                 ?: AllureAndroidListener::class.java.name)
         super.onCreate(arguments)
 
-        Allure.resDir = File(getResDirPath())
 
-        deleteFolderFile(Allure.resDir!!, true)
-        mkresultDir()
+//        Allure.resDir = sdDirectory(resultsName)
+//
+//        deleteFolderFile(Allure.resDir!!, true)
+//        mkresultDir()
 
     }
 }

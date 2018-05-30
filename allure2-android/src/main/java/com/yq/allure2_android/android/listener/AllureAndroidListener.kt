@@ -96,6 +96,8 @@ open class AllureAndroidListener : InstrumentationRunListener(){
 
     override fun testRunStarted(description: Description) {
         grantPermissions()
+        Allure.getResultFile()
+
         val uuid = testContainer.get()
         var container = TestResultContainer()
                 .withUuid(uuid)

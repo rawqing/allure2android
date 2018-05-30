@@ -9,11 +9,10 @@ import android.support.test.uiautomator.UiDevice
 import android.util.Log
 import java.io.File
 import com.yq.allure2_android.common.Allure
-import com.yq.allure2_android.common.Allure.resDirPath
 
 
 val allureTag = "allure_"
-val reportName = "allure-results" + File.separator
+val resultsName = "allure-results" + File.separator
 
 
 fun isNull(obj : Any?):Boolean{
@@ -30,18 +29,18 @@ fun printHexBinary(data: ByteArray, lowerCase: Boolean = false): String {
     return if (lowerCase) r.toString().toLowerCase() else r.toString()
 }
 
-fun obtainDirectory(path: String): File {
-    Log.d(allureTag ,"start mkdirs ~~~~~")
-    val file : File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        File(Environment.getExternalStorageDirectory(), path)
-    } else {
-        getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
-    }
-//    if (!file.exists()){
-//        file.createNewFile()
+//fun obtainDirectory(path: String): File {
+//    Log.d(allureTag ,"start mkdirs ~~~~~")
+//    val file : File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//        File(Environment.getExternalStorageDirectory(), path)
+//    } else {
+//        getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
 //    }
-    return file
-}
+////    if (!file.exists()){
+////        file.createNewFile()
+////    }
+//    return file
+//}
 
 
 fun grantPermissions() {
@@ -58,31 +57,31 @@ fun grantPermissions() {
 /**
  * 获取可存取的目录路径
  */
-fun getResDirPath() : String{
-    if (Allure.resDirPath == null || "" == Allure.resDirPath){
-        Allure.resDirPath = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
-                .absolutePath + File.separator + reportName
-    }
+//fun getResDirPath() : String{
+//    if (Allure.resDirPath == null || "" == Allure.resDirPath){
+//        Allure.resDirPath = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+//                .absolutePath + File.separator + resultsName
+//    }
+//
+//    return Allure.resDirPath!!
+//}
 
-    return Allure.resDirPath!!
-}
-
-/**
- * 创建一个res 目录
- */
-fun mkresultDir(resultsDir: File? = null) :File{
-    var resDir: File? = resultsDir
-    if (resultsDir == null) {
-        val filesDir = getResDirPath()
-        resDir = File(filesDir)
-    }
-
-    if(!resDir!!.exists()) {
-        val mk = resDir.mkdirs()
-        Log.i(allureTag, "mkdir : $mk")
-    }
-    return resDir
-}
+///**
+// * 创建一个res 目录
+// */
+//fun mkresultDir(resultsDir: File? = null) :File{
+//    var resDir: File? = resultsDir
+//    if (resultsDir == null) {
+//        val filesDir = getResDirPath()
+//        resDir = File(filesDir)
+//    }
+//
+//    if(!resDir!!.exists()) {
+//        val mk = resDir.mkdirs()
+//        Log.i(allureTag, "mkdir : $mk")
+//    }
+//    return resDir
+//}
 
 /**
  * 递归删除目录及子文件
@@ -110,21 +109,21 @@ fun deleteFolderFile(file: File, deleteThisPath: Boolean) {
 
 }
 
-/**
- * 获得sd card的File
- */
-fun sdDirectory(path: String = reportName): File {
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        return File(Environment.getExternalStorageDirectory(), path)
-    } else {
-        return getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
-    }
-}
-
-/**
- * sd card File的绝对路径
- */
-fun sdPath(path: String = reportName): String {
-    return sdDirectory(path).absolutePath
-}
+///**
+// * 获得sd card的File
+// */
+//fun sdDirectory(path: String = resultsName): File {
+//
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//        return File(Environment.getExternalStorageDirectory(), path)
+//    } else {
+//        return getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
+//    }
+//}
+//
+///**
+// * sd card File的绝对路径
+// */
+//fun sdPath(path: String = resultsName): String {
+//    return sdDirectory(path).absolutePath
+//}

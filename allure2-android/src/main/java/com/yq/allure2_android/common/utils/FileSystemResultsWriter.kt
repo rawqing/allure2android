@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty
 class FileAndroidResultsWriter (val serializationProcessor: SerializationProcessor = GsonSerializationProcessor) : AllureResultsWriter {
 
     private val TAG = allureTag+"FARWriter"
-    private val resultsDir: File by lazy { Allure.resDir?: mkresultDir() }
+    private val resultsDir: File? by lazy { Allure.resDir?: Allure.getResultFile() }
 
 
 

@@ -1,14 +1,11 @@
 package com.yq.allure2_android.common
 
+import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.uiautomator.UiDevice
 import android.util.Log
 import com.yq.allure2_android.android.listener.LifecycleNotifier
 import com.yq.allure2_android.common.resultRW.AllureResultsWriter
-import com.yq.allure2_android.common.utils.FileAndroidResultsWriter
-import com.yq.allure2_android.common.utils.ServiceLoaderUtils
-import com.yq.allure2_android.common.utils.allureTag
-import com.yq.allure2_android.common.utils.getResDirPath
 import com.yq.allure2_android.model.listeners.ContainerLifecycleListener
 import com.yq.allure2_android.model.listeners.FixtureLifecycleListener
 import com.yq.allure2_android.model.listeners.StepLifecycleListener
@@ -21,6 +18,11 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 import kotlin.text.Charsets.UTF_8
+import android.support.test.InstrumentationRegistry.getInstrumentation
+import android.os.Build
+import android.os.Environment
+import com.yq.allure2_android.common.utils.*
+import java.io.IOException
 
 
 public object Allure {
@@ -29,9 +31,85 @@ public object Allure {
     private val TAG = "${allureTag}Allure"
 
     var resDir: File? = null
-    var resDirPath: String? = null
+//    var resDirPath: String? = null
 
     val lifecycle: AllureLifecycle = getAllureLifecycle(FileAndroidResultsWriter())
+
+
+//    val CACHE = 0
+//    val SDCARD = 1
+//
+//    var site = 0
+
+
+    fun getResultFile(): File? {
+        if (resDir == null) {
+            resDir = getSdcardDir()
+            if (resDir == null) {
+                resDir = getCacheDir()
+            }
+        }
+        return resDir
+    }
+
+    fun setResultFile(resultFile: File) {
+        Allure.resDir = resultFile
+        makeDir(resultFile)
+    }
+
+    /**
+     * 在app缓存目录创建results目录
+     * @return
+     */
+    private fun getCacheDir(): File? {
+        val path = getInstrumentation().targetContext
+                .filesDir.absolutePath + File.separator + resultsName
+        val file = File(path)
+        return if (makeDir(file)!!) {
+            file
+        } else null
+    }
+
+    /**
+     * 在sdcard 下创建目录
+     * @return
+     */
+    private fun getSdcardDir(): File? {
+        try {
+            grantPermissions()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        val file: File
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            file = File(Environment.getExternalStorageDirectory(), resultsName)
+        } else {
+            file = getInstrumentation().context.getDir(resultsName, Context.MODE_PRIVATE)
+        }
+        return if (makeDir(file)!!) {
+            file
+        } else null
+
+    }
+
+    /**
+     * 创建文件 , 创建前先删除
+     * @param file
+     * @return
+     */
+    private fun makeDir(file: File?): Boolean? {
+        if (file != null) {
+            if (file.exists()) {
+                deleteFolderFile(file, true)
+            }
+            val mk = file.mkdirs()
+            Log.i(TAG, "mkdir : $mk")
+            return mk
+        }
+        return false
+    }
+
 
     private fun getAllureLifecycle(writer: AllureResultsWriter): AllureLifecycle {
         val classLoader = javaClass.classLoader
@@ -91,7 +169,7 @@ public object Allure {
     fun addAttachment(name: String ,takeScreenshot: (file: File)-> Boolean) :String{
         val source = lifecycle.makeAttachmentSource(".png")
 
-        val filePath = (resDirPath?:getResDirPath()) + File.separator + source
+        val filePath = (resDir?.absolutePath?: getResultFile()?.absolutePath) + File.separator + source
         val isTakeed = takeScreenshot(File(filePath))
         if (isTakeed){
             lifecycle.addAttachment(name ,source)
