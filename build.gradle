@@ -2,8 +2,8 @@
 
 buildscript {
     ext.kotlin_version = '1.2.41'
-    ext.mvn_local = 'file://~/.m2/repository'
-    ext.pakg_version = '1.0.5'
+    ext.mvn_local = "file://${System.getenv("HOMEDRIVE") }${System.getenv("HOMEPATH") }/.m2/repository"
+    ext.pakg_version = '1.0.6'
     repositories {
         google()
         jcenter()
