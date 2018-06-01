@@ -77,11 +77,6 @@ public final class Allure {
      * @return
      */
     private static File getSdcardDir(){
-//        try {
-//            Tools.grantPermissions();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         File file;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             file =  new File(Environment.getExternalStorageDirectory(), resultsName);
@@ -182,7 +177,7 @@ public final class Allure {
 
     public static String addAttachment(String name){
         return addAttachment(name, file ->
-                UiDevice.getInstance(getInstrumentation()).takeScreenshot(file ,0.8f,80));
+                UiDevice.getInstance(getInstrumentation()).takeScreenshot(file));
     }
 
     public static void removeAttachment(String filePath){

@@ -1,2 +1,2 @@
 rootProject.name = 'Allure2android'
-include ':app', ':allure2-android'
+include ':app', ':allure2-android', ':allure2-androidj'

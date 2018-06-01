@@ -71,11 +71,6 @@ public object Allure {
      * @return
      */
     private fun getSdcardDir(): File? {
-        try {
-            grantPermissions()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
 
         val file: File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             File(Environment.getExternalStorageDirectory(), resultsName)
@@ -174,7 +169,7 @@ public object Allure {
     }
     fun addAttachment(name: String) :String{
         return addAttachment(name ,{
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(it ,0.8f,80)
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(it)
         })
     }
     fun removeAttachment(filePath:String){
