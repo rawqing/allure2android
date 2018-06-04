@@ -97,7 +97,7 @@ public final class Allure {
      */
     private static Boolean makeDir(File file) {
         if (notNone(file)) {
-            if (file.exists()) {
+            if (file.exists()|| file.isDirectory()) {
                 Tools.deleteFolderFile(file,true);
             }
             if (file.isDirectory()) {
