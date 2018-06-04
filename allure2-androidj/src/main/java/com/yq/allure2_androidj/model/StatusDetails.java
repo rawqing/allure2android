@@ -90,7 +90,12 @@ public class StatusDetails implements Serializable
      *     
      */
     public void setMessage(String value) {
-        this.message = value;
+        int max_len = 300;
+        if (value == null || value.length() <= max_len) {
+            this.message = value;
+        } else {
+            this.message = value.substring(0, max_len);
+        }
     }
 
     /**
