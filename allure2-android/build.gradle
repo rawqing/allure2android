@@ -2,19 +2,35 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
-
-group = 'com.yq.allure2android'
+group = 'yq.allure2android'
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "${mvn_local}")
-            pom.groupId = "com.yq.allure2android"
+            repository(url: "${mavenLocal().url}")
+            pom.groupId = "yq.allure2android"
             pom.version = "${pakg_version}"
             pom.artifactId = 'allure2android'
         }
     }
 }
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+publish {
+    userOrg = 'yqing'
+    groupId = "$group_Id"
+    artifactId = "allure2-android"
+    publishVersion = "$pakg_version"
+    desc = 'Allure2 的Android支持项目，kotlin语言支持.'
+    website = "$gitsite"
+}
+
+
 
 android {
     compileSdkVersion 27
@@ -38,6 +54,9 @@ android {
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+    lintOptions {
+        abortOnError false
     }
 
 }
@@ -67,3 +86,4 @@ kotlin {
         coroutines "warn"
     }
 }
+
